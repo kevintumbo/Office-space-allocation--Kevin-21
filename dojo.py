@@ -2,7 +2,7 @@ class Dojo(object):
     def __init__(self):
         self.total_rooms = []
         self.offices = []
-        self.livingspaces = []
+        self.living_spaces = []
         self.total_people = []
         self.staff = []
         self.fellows = []
@@ -13,4 +13,5 @@ class Dojo(object):
     def add_person(self, person_name, role, accommodation='No'):
         pass
 
-
+    def __del__(self):
+        print("Destructor started")
