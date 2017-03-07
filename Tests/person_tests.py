@@ -7,6 +7,9 @@ class TestPersonCreation(unittest.TestCase):
     """ Test cases to for successful creation and failed of person(s) """
 
     def test_can_add_person(self):
+
+        """ Test successful addition of person """
+
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya", "uganda"])
         self.dojo.create_room("living", ["Nairobi", "Kampala"])
@@ -16,9 +19,10 @@ class TestPersonCreation(unittest.TestCase):
         self.dojo.add_person('Steve', 'Fellow', 'N')
         self.assertEqual(len(self.dojo.total_people), 4, 'Person(s) were added to the system!')
 
-    """ Test successful addition of staff"""
-
     def test_can_add_staff(self):
+
+        """ Test successful addition of staff """
+
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya", "uganda"])
         self.dojo.create_room("living", ["Nairobi", "Kampala"])
@@ -26,9 +30,10 @@ class TestPersonCreation(unittest.TestCase):
         self.dojo.add_person('Fred', 'Staff')
         self.assertEqual(len(self.dojo.total_people), 1, ' staff member(s) has been added to the system!')
 
-    """ Test successful addition of fellows"""
-
     def test_can_add_fellow(self):
+
+        """ Test successful addition of fellows"""
+
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya", "uganda"])
         self.dojo.create_room("living", ["Nairobi", "Kampala"])
@@ -38,9 +43,10 @@ class TestPersonCreation(unittest.TestCase):
         self.dojo.add_person('Larry', 'Fellow', 'N')
         self.assertEqual(len(self.dojo.total_people), 3, 'staff member(s) were added to the system!')
 
-    """ Test failure in addition of persons with Missing arguments """
-
     def test_cannot_add_person_with_missing_arguments(self):
+
+        """ Test failure in addition of persons with Missing arguments """
+
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya", "uganda"])
         self.dojo.create_room("living", ["Nairobi", "Kampala"])
