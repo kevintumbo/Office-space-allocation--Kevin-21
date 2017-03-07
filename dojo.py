@@ -11,23 +11,28 @@ class Dojo(object):
         self.available_living_space = []
 
     def create_room(self, room_type, room_name):
+
+        """ creates a unique new room space """
+
         for room in room_name:
             if room in [room.room_name for room in self.total_rooms]:
                 print('sorry that room name already exists')
             else:
                 if room_type == "office":
-                    for rm in room_name:
-                        new_office = Office(rm)
-                        self.total_rooms.append(new_office)
-                        print('An office called {0} has been successfully created!'.format(new_office.room_name))
+                    new_office = Office(room)
+                    self.total_rooms.append(new_office)
+                    print('An office called {0} has been successfully created!'.format(new_office.room_name))
 
                 elif room_type == "living":
-                    for rm in room_name:
-                        new_living_space = LivingSpace(rm)
-                        self.total_rooms.append(new_living_space)
-                        print('A living space called {0} has been successfully created!'.format(new_living_space.room_name))
+                    new_living_space = LivingSpace(room)
+                    self.total_rooms.append(new_living_space)
+                    print('A living space called {0} has been successfully created!'.format(new_living_space.room_name))
 
-    def add_person(self, person_name, role, accommodation="N"):
+    def add_person(self, first_name, last_name, role, accommodation="N"):
+
+        """ adds a new person to the system """
+        person_name = first_name + " " + last_name
+
         if role == "Fellow" or role == "Staff":
             self.check_availability()
 
@@ -54,6 +59,9 @@ class Dojo(object):
             print("You've entered an invalid role. Please choose either Fellow or Staff")
 
     def check_availability(self):
+
+        """ checks if rooms have vacant spaces"""
+
         if self.total_rooms:
             for room in self.total_rooms:
 
@@ -74,11 +82,17 @@ class Dojo(object):
                             self.available_living_space.append(room)
 
     def allocate_office(self, new_person):
+
+        """ Allocates vacant office space to person"""
+
         office = random.choice(self.available_offices)
         office.occupants.append(new_person)
         print('{0} has been allocated the office {1}'.format(new_person.person_name, office.room_name))
 
     def allocate_living_space(self, new_person):
+
+        """ Allocates vacant living space to person"""
+
         living_space = random.choice(self.available_living_space)
         living_space.occupants.append(new_person)
         print('{0} has been allocated the living spaces {1}'.format(new_person.person_name, living_space.room_name))
