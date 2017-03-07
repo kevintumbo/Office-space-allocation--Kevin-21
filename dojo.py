@@ -22,7 +22,6 @@ class Dojo(object):
                     new_office = Office(room)
                     self.total_rooms.append(new_office)
                     print('An office called {0} has been successfully created!'.format(new_office.room_name))
-
                 elif room_type == "living":
                     new_living_space = LivingSpace(room)
                     self.total_rooms.append(new_living_space)
@@ -35,10 +34,8 @@ class Dojo(object):
 
         if role == "Fellow" or role == "Staff":
             self.check_availability()
-
             if not self.available_offices:
                 print('sorry no offices available at the moment. please try again later')
-
             elif role == "Fellow":
                 new_person = Fellow(person_name)
                 self.total_people.append(new_person)
@@ -48,7 +45,6 @@ class Dojo(object):
                         print('sorry no living space available at the moment. please try again later ')
                     else:
                         self.allocate_living_space(new_person)
-
             elif role == "Staff":
                 new_person = Staff(person_name)
                 self.total_people.append(new_person)
@@ -64,17 +60,15 @@ class Dojo(object):
 
         if self.total_rooms:
             for room in self.total_rooms:
-
                 if room.type == "office":
-                    if len(room.occupants) >= room.maximum_occupants:
+                    if len(room.occupants) == room.maximum_occupants:
                         if room in self.available_offices:
                             self.available_offices.remove(room)
                     elif len(room.occupants) < room.maximum_occupants:
                         if room not in self.available_offices:
                             self.available_offices.append(room)
-
                 elif room.type == "living":
-                    if len(room.occupants) >= room.maximum_occupants:
+                    if len(room.occupants) == room.maximum_occupants:
                         if room in self.available_living_space:
                             self.available_living_space.remove(room)
                     elif len(room.occupants) < room.maximum_occupants:
