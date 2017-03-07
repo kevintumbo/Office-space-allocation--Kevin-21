@@ -6,11 +6,13 @@ class Person(object):
 class Fellow(Person):
     def __init__(self, person_name):
         super().__init__(person_name)
+        self.role = "Fellow"
 
 
 class Staff(Person):
     def __init__(self, person_name):
         super().__init__(person_name)
+        self.role = "Staff"
 
 
 
