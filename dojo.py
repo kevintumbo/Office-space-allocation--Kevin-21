@@ -32,25 +32,25 @@ class Dojo(object):
         """ adds a new person to the system """
         person_name = first_name + " " + last_name
 
-        if role == "Fellow" or role == "Staff":
+        if role == "Fellow":
+            new_person = Fellow(person_name)
+            self.total_people.append(new_person)
             self.check_availability()
-            if not self.available_offices:
+            if self.available_offices:
+                self.allocate_room(new_person, room="office")
+            else:
                 print('sorry no offices available at the moment. please try again later')
-            elif role == "Fellow":
-                new_person = Fellow(person_name)
-                self.total_people.append(new_person)
-                self.allocate_office(new_person)
-                if accommodation == 'Y':
-                    if not self.available_living_space:
-                        print('sorry no living space available at the moment. please try again later ')
-                    else:
-                        self.allocate_living_space(new_person)
-            elif role == "Staff":
-                new_person = Staff(person_name)
-                self.total_people.append(new_person)
-                self.allocate_office(new_person)
-                if accommodation == 'Y':
-                    print('Sorry living space is for fellows only')
+            if accommodation == 'Y':
+                if not self.available_living_space:
+                    print('sorry no living space available at the moment. please try again later ')
+                else:
+                    self.allocate_room(new_person, room="living")
+        elif role == "Staff":
+            new_person = Staff(person_name)
+            self.total_people.append(new_person)
+            self.allocate_room(new_person, room="living")
+            if accommodation == 'Y':
+                print('Sorry living space is for fellows only')
         else:
             print("You've entered an invalid role. Please choose either Fellow or Staff")
 
@@ -75,18 +75,16 @@ class Dojo(object):
                         if room not in self.available_living_space:
                             self.available_living_space.append(room)
 
-    def allocate_office(self, new_person):
+    def allocate_room(self, new_person, room):
 
-        """ Allocates vacant office space to person"""
+        """ Allocates vacant office  or living space to person"""
+        if room == "office":
+            office = random.choice(self.available_offices)
+            office.occupants.append(new_person)
+            print('{0} has been allocated the office {1}'.format(new_person.person_name, office.room_name))
 
-        office = random.choice(self.available_offices)
-        office.occupants.append(new_person)
-        print('{0} has been allocated the office {1}'.format(new_person.person_name, office.room_name))
+        else:
+            living_space = random.choice(self.available_living_space)
+            living_space.occupants.append(new_person)
+            print('{0} has been allocated the living spaces {1}'.format(new_person.person_name, living_space.room_name))
 
-    def allocate_living_space(self, new_person):
-
-        """ Allocates vacant living space to person"""
-
-        living_space = random.choice(self.available_living_space)
-        living_space.occupants.append(new_person)
-        print('{0} has been allocated the living spaces {1}'.format(new_person.person_name, living_space.room_name))
