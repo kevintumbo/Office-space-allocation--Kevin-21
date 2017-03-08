@@ -3,7 +3,7 @@ Dojo space allocator
 
 Usage:
     dojo_space create_room <room_type> <room_name>...
-    dojo_space add_person <first_name> <last_name> <Fellow|Staff> [--wants_accommodation]
+    dojo_space add_person <first_name> <last_name> <role> [<wants_accommodation>]
     dojo_space (-i | --interactive)
 
 Options:
@@ -53,19 +53,19 @@ class App(cmd.Cmd):
 
     intro = 'A Room Allocation system for Andela Kenya facility Known As the dojo'
     prompt = '(dojo_space)'
+    dojo = Dojo()
 
     @docopt_cmd
     def do_create_room(self, arg):
 
         """
-        creates a new room
         Usage: create_room <room_type> <room_name>...
         """
         room_type = arg["<room_type>"]
         room_name = arg["<room_name>"]
 
         if room_type == "office" or room_type == "living":
-            Dojo().create_room(room_type, room_name)
+            self.dojo.create_room(room_type, room_name)
         else:
             print("You've entered an invalid room type. Please choose either office or living")
 
@@ -73,16 +73,15 @@ class App(cmd.Cmd):
     def do_add_person(self, arg):
 
         """
-        adds a person and allocates room if available
-        Usage: add_person <person_name> <Fellow|Staff> [--wants_accommodation]
+        Usage: add_person <first_name> <last_name> <role> [<wants_accommodation>]
         """
 
         first_name = arg["<first_name>"]
         last_name = arg["<last_name>"]
-        role = arg["<Fellow|Staff>"]
-        accommodation = arg["--wants_accommodation"]
+        role = arg["<role>"]
+        accommodation = arg["<wants_accommodation>"]
 
-        Dojo().add_person(first_name, last_name, role, accommodation)
+        self.dojo.add_person(first_name, last_name, role, accommodation)
 
     def do_quit(self, arg):
 
