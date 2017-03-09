@@ -97,3 +97,11 @@ class Dojo(object):
             living_space.occupants.append(new_person)
             print('{0} has been allocated the living spaces {1}'.format(new_person.person_name, living_space.room_name))
 
+    def print_room(self, room_name):
+        pass
+
+    def print_allocations(self, filename=None):
+        pass
+
+    def print_unallocated(self, filename=None):
+        pass
