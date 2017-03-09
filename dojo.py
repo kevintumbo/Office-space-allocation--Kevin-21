@@ -48,7 +48,9 @@ class Dojo(object):
         elif role == "Staff":
             new_person = Staff(person_name)
             self.total_people.append(new_person)
-            self.allocate_room(new_person, room="living")
+            self.check_availability()
+            if self.available_offices:
+                self.allocate_room(new_person, room="office")
             if accommodation == 'Y':
                 print('Sorry living space is for fellows only')
         else:
