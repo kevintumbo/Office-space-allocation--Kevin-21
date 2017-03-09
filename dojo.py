@@ -9,6 +9,8 @@ class Dojo(object):
         self.total_people = []
         self.available_offices = []
         self.available_living_space = []
+        self.waiting_for_office_allocation = []
+        self.waiting_for_living_space_allocation = []
 
     def create_room(self, room_type, room_name):
 
@@ -39,9 +41,11 @@ class Dojo(object):
             if self.available_offices:
                 self.allocate_room(new_person, room="office")
             else:
+                self.waiting_for_office_allocation.append(new_person)
                 print('sorry no offices available at the moment. please try again later')
             if accommodation == 'Y':
                 if not self.available_living_space:
+                    self.waiting_for_living_space_allocation.append(new_person)
                     print('sorry no living space available at the moment. please try again later ')
                 else:
                     self.allocate_room(new_person, room="living")
@@ -51,6 +55,9 @@ class Dojo(object):
             self.check_availability()
             if self.available_offices:
                 self.allocate_room(new_person, room="office")
+            else:
+                self.waiting_for_office_allocation.append(new_person)
+                print('sorry no offices available at the moment. please try again later')
             if accommodation == 'Y':
                 print('Sorry living space is for fellows only')
         else:
