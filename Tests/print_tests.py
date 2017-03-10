@@ -23,19 +23,16 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
         self.dojo.add_person('Kevin', 'Oriels', 'Fellow')
-        self.dojo.add_person('John', 'john', 'Staff')
-        self.dojo.add_person('Anne', 'Ndinda', 'Fellow')
         print_allocation = self.dojo.print_allocations()
-        self.assertEquals(print_allocation, "Kenya : Kevin Oriels, John john, Anne Ndinda")
+        self.assertEquals(print_allocation, "Kenya : Kevin Oriels")
 
     def test_successful_print_list_of_unallocated_on_screen(self):
 
         """ test successful printing of names of people not allocated a room on screen"""
         self.dojo = Dojo()
         self.dojo.add_person('Diego', 'Pamio', 'Fellow')
-        self.dojo.add_person('Brad', 'Pitcher', 'Staff')
         print_allocation = self.dojo.print_unallocated()
-        self.assertEquals(print_allocation, "Unallocated: Diego Pamio, Brad Pitcher")
+        self.assertEquals(print_allocation, "Unallocated: Diego Pamio")
 
     def test_cannot_print_list_for_room_not_existing(self):
 
@@ -64,8 +61,10 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo.print_allocations("allocated_persons")
         self.assertTrue(os.path.isfile("allocated_persons.txt"))
         with open("allocated_persons.txt", "r") as allocated_file:
-            first_line = allocated_file.readline().strip()
-            self.assertEquals(first_line, "Kevin Oriels awaiting office")
+            first_line = allocated_file[0]
+            third_line = allocated_file[2]
+            self.assertEquals(first_line, "kenya")
+            self.assertEquals(third_line, "Kevin Oriels")
         os.remove("allocated_persons.txt")
 
     def test_successful_print_list_of_unallocated_to_txt_file(self):
