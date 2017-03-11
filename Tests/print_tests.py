@@ -1,5 +1,6 @@
 import unittest
 import os
+import sys
 from dojo import Dojo
 
 
@@ -14,8 +15,10 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
         self.dojo.add_person('Kevin', 'Oriels', 'Fellow')
-        print_room = self.dojo.print_room("kenya")
-        self.assertTrue(print_room, "Kenya Contains Kevin Oriels")
+        self.dojo.print_room("kenya")
+        saved = sys.stdout
+        output =saved.getvalue()
+        self.assertIn("office space kenya contains Kevin Oriels", output)
 
     def test_successful_print_list_of_allocation_on_screen(self):
 
@@ -23,16 +26,20 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
         self.dojo.add_person('Kevin', 'Oriels', 'Fellow')
-        print_allocation = self.dojo.print_allocations()
-        self.assertEquals(print_allocation, "Kenya : Kevin Oriels")
+        self.dojo.print_allocations()
+        saved = sys.stdout
+        output =saved.getvalue()
+        self.assertIn('Kevin Oriels' , output)
 
     def test_successful_print_list_of_unallocated_on_screen(self):
 
         """ test successful printing of names of people not allocated a room on screen"""
         self.dojo = Dojo()
         self.dojo.add_person('Diego', 'Pamio', 'Fellow')
-        print_allocation = self.dojo.print_unallocated()
-        self.assertEquals(print_allocation, "Unallocated: Diego Pamio")
+        self.dojo.print_unallocated()
+        saved = sys.stdout
+        output =saved.getvalue()
+        self.assertIn('Diego Pamio', output)
 
     def test_cannot_print_list_for_room_not_existing(self):
 
@@ -40,8 +47,10 @@ class TestPrintCreation(unittest.TestCase):
 
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
-        print_room = self.dojo.print_room("Britain")
-        self.assertEquals(print_room, "Sorry. No such room Exists")
+        self.dojo.print_room("Britain")
+        saved = sys.stdout
+        output =saved.getvalue()
+        self.assertIn("Sorry. No such room Exists", output)
 
     def test_can_print_empty_room(self):
 
@@ -49,8 +58,10 @@ class TestPrintCreation(unittest.TestCase):
 
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
-        print_room = self.dojo.print_room("kenya")
-        self.assertEquals(print_room, "Kenya is currently empty")
+        self.dojo.print_room("kenya")
+        saved = sys.stdout
+        output =saved.getvalue()
+        self.assertIn("office space kenya contains no occupants", output)
 
     def test_successful_print_list_of_allocation_to_txt_file(self):
 
@@ -60,11 +71,11 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo.add_person('Kevin', 'Oriels', 'Fellow')
         self.dojo.print_allocations("allocated_persons")
         self.assertTrue(os.path.isfile("allocated_persons.txt"))
-        with open("allocated_persons.txt", "r") as allocated_file:
-            first_line = allocated_file[0]
-            third_line = allocated_file[2]
-            self.assertEquals(first_line, "kenya")
-            self.assertEquals(third_line, "Kevin Oriels")
+        allocated_file = open("allocated_persons.txt").readlines()
+        first_line = allocated_file[1]
+        third_line = allocated_file[5]
+        self.assertEquals(first_line, "kenya \n")
+        self.assertEquals(third_line, "Kevin Oriels\n")
         os.remove("allocated_persons.txt")
 
     def test_successful_print_list_of_unallocated_to_txt_file(self):
@@ -74,8 +85,8 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo.add_person('Diego', 'Pamio', 'Fellow')
         self.dojo.print_unallocated("unallocated_persons")
         self.assertTrue(os.path.isfile("unallocated_persons.txt"))
-        with open("unallocated_persons.txt", "r") as unallocated_file:
-            first_line = unallocated_file.readline().strip()
-            self.assertEquals(first_line, "Diego Pamio awaiting office")
+        unallocated_file = open("unallocated_persons.txt").readlines()
+        first_line = unallocated_file[4]
+        self.assertEquals(first_line, "Diego Pamio\n")
         os.remove("unallocated_persons.txt")
 
