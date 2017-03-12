@@ -102,24 +102,19 @@ class Dojo(object):
             if so it prints out a statement that highlights the room name,
             the room type and occupants.
         """
-        if self.total_rooms:
-            if room in [room.room_name for room in self.total_rooms]:
-                for room_to_check in self.total_rooms:
-                    if room == room_to_check.room_name:
-                        if len(room_to_check.occupants) > 0:
-                            people = []
-                            for occupant in room_to_check.occupants:
-                                people.append(occupant.person_name)
-                            str1 = ', '.join(str(e) for e in people)
-                            print(
-                                "{0} space {1} contains {2}".format(room_to_check.type, room_to_check.room_name, str1))
-                        else:
-                            print("{0} space {1} contains no occupants".format(room_to_check.type,
-                                                                               room_to_check.room_name))
-            else:
-                print("Sorry. No such room Exists")
+        if room in [room.room_name for room in self.total_rooms]:
+            for room_to_check in self.total_rooms:
+                if room == room_to_check.room_name:
+                    if len(room_to_check.occupants) > 0:
+                        people = []
+                        for occupant in room_to_check.occupants:
+                            people.append(occupant.person_name)
+                        str1 = ', '.join(str(e) for e in people)
+                        print("{0} space {1} contains {2}".format(room_to_check.type, room_to_check.room_name, str1))
+                    else:
+                        print("{0} space {1} contains no occupants".format(room_to_check.type, room_to_check.room_name))
         else:
-            print("Sorry.No rooms exist. Please create one")
+            print("Sorry.That rooms does not exist.")
 
     def print_allocations(self, filename=None):
         """
