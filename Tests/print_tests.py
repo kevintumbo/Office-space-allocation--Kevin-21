@@ -50,7 +50,7 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo.print_room("Britain")
         saved = sys.stdout
         output =saved.getvalue()
-        self.assertIn("Sorry. No such room Exists", output)
+        self.assertIn("Sorry.That rooms does not exist.", output)
 
     def test_can_print_empty_room(self):
 
