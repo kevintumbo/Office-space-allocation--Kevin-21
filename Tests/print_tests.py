@@ -14,7 +14,7 @@ class TestPrintCreation(unittest.TestCase):
 
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
-        self.dojo.add_person('Kevin', 'Oriels', 'Fellow')
+        self.dojo.add_person('Kevin', 'Oriels', 'FELLOW')
         self.dojo.print_room("kenya")
         saved = sys.stdout
         output =saved.getvalue()
@@ -25,7 +25,7 @@ class TestPrintCreation(unittest.TestCase):
         """ test successful printing of names of people allocated a room on screen"""
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
-        self.dojo.add_person('Kevin', 'Oriels', 'Fellow')
+        self.dojo.add_person('Kevin', 'Oriels', 'FELLOW')
         self.dojo.print_allocations()
         saved = sys.stdout
         output =saved.getvalue()
@@ -35,7 +35,7 @@ class TestPrintCreation(unittest.TestCase):
 
         """ test successful printing of names of people not allocated a room on screen"""
         self.dojo = Dojo()
-        self.dojo.add_person('Diego', 'Pamio', 'Fellow')
+        self.dojo.add_person('Diego', 'Pamio', 'FELLOW')
         self.dojo.print_unallocated()
         saved = sys.stdout
         output =saved.getvalue()
@@ -60,7 +60,7 @@ class TestPrintCreation(unittest.TestCase):
         self.dojo.create_room("office", ["kenya"])
         self.dojo.print_room("kenya")
         saved = sys.stdout
-        output =saved.getvalue()
+        output = saved.getvalue()
         self.assertIn("office space kenya contains no occupants", output)
 
     def test_successful_print_list_of_allocation_to_txt_file(self):
@@ -68,7 +68,8 @@ class TestPrintCreation(unittest.TestCase):
         """ test successful printing of names of people allocated a room to a txt file """
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
-        self.dojo.add_person('Kevin', 'Oriels', 'Fellow')
+        self.dojo.create_room("living", ["Nairobi"])
+        self.dojo.add_person('Kevin', 'Oriels', 'FELLOW')
         self.dojo.print_allocations("allocated_persons")
         self.assertTrue(os.path.isfile("allocated_persons.txt"))
         allocated_file = open("allocated_persons.txt").readlines()
@@ -76,17 +77,18 @@ class TestPrintCreation(unittest.TestCase):
         third_line = allocated_file[5]
         self.assertEquals(first_line, "kenya \n")
         self.assertEquals(third_line, "Kevin Oriels\n")
-        os.remove("allocated_persons.txt")
+        # os.remove("allocated_persons.txt")
 
     def test_successful_print_list_of_unallocated_to_txt_file(self):
 
         """ test successful printing of names of people not allocated a room to a txt file """
         self.dojo = Dojo()
-        self.dojo.add_person('Diego', 'Pamio', 'Fellow')
+        self.dojo.add_person('Diego', 'Pamio', 'FELLOW')
+        self.dojo.add_person('Trent', 'Renzor', 'FELLOW', 'Y')
         self.dojo.print_unallocated("unallocated_persons")
         self.assertTrue(os.path.isfile("unallocated_persons.txt"))
         unallocated_file = open("unallocated_persons.txt").readlines()
         first_line = unallocated_file[4]
-        self.assertEquals(first_line, "Diego Pamio\n")
+        self.assertEquals(first_line, "Diego Pamio, Trent Renzor\n")
         os.remove("unallocated_persons.txt")
 
