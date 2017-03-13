@@ -4,6 +4,9 @@ Dojo space allocator
 Usage:
     dojo_space create_room <room_type> <room_name>...
     dojo_space add_person <first_name> <last_name> <role> [<wants_accommodation>]
+    dojo_space print_room <room_name>
+    dojo_space print_allocation [<filename>]
+    dojo_space print_unallocated [<filename>]
     dojo_space (-i | --interactive)
 
 Options:
@@ -82,6 +85,30 @@ class App(cmd.Cmd):
         accommodation = arg["<wants_accommodation>"]
 
         self.dojo.add_person(first_name, last_name, role, accommodation)
+
+    @docopt_cmd
+    def do_print_room(self, arg):
+
+        """
+        Usage: print_room <room_name>
+        """
+        self.dojo.print_room(arg["<room_name>"])
+
+    @docopt_cmd
+    def do_print_allocation(self, arg):
+
+        """
+        Usage: print_allocation [<filename>]
+        """
+        self.dojo.print_allocations(arg["<filename>"])
+
+    @docopt_cmd
+    def do_print_unallocated(self, arg):
+
+        """
+        Usage: print_unallocated [<filename>]
+        """
+        self.dojo.print_unallocated(arg["<filename>"])
 
     def do_quit(self, arg):
 
