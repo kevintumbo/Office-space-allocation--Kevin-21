@@ -196,7 +196,7 @@ class Dojo(object):
 
             if filename:
                 file = open(filename + ".txt", "a")
-                file.write("\n" + "people who Living spaces \n")
+                file.write("\n" + "people who lack Living spaces \n")
                 file.write("\n" + "------------------------------------------\n")
                 file.write("{}".format(str1) + "\n")
                 file.close()
