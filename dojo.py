@@ -34,7 +34,7 @@ class Dojo(object):
         """ adds a new person to the system """
         person_name = first_name + " " + last_name
 
-        if role == "Fellow":
+        if role == "FELLOW":
             new_person = Fellow(person_name)
             self.total_people.append(new_person)
             self.check_availability()
@@ -49,7 +49,7 @@ class Dojo(object):
                     print('sorry no living space available at the moment. please try again later ')
                 else:
                     self.allocate_room(new_person, room="living")
-        elif role == "Staff":
+        elif role == "STAFF":
             new_person = Staff(person_name)
             self.total_people.append(new_person)
             self.check_availability()
@@ -102,7 +102,9 @@ class Dojo(object):
             if so it prints out a statement that highlights the room name,
             the room type and occupants.
         """
-        if room in [room.room_name for room in self.total_rooms]:
+        if room not in [room.room_name for room in self.total_rooms]:
+            print("Sorry.That rooms does not exist.")
+        else:
             for room_to_check in self.total_rooms:
                 if room == room_to_check.room_name:
                     if len(room_to_check.occupants) > 0:
@@ -113,15 +115,15 @@ class Dojo(object):
                         print("{0} space {1} contains {2}".format(room_to_check.type, room_to_check.room_name, str1))
                     else:
                         print("{0} space {1} contains no occupants".format(room_to_check.type, room_to_check.room_name))
-        else:
-            print("Sorry.That rooms does not exist.")
 
     def print_allocations(self, filename=None):
         """
         this method checks if a room exists and if the room has occupants.
         if so it prints out a statement highlighting the room name and the names of its occupants
         """
-        if self.total_rooms:
+        if not self.total_rooms:
+            print("Sorry.No rooms exist. Please create one")
+        else:
             for room in self.total_rooms:
                 if len(room.occupants) > 0:
                     people = []
@@ -134,6 +136,7 @@ class Dojo(object):
                         file.write("\n" + "------------------------------------------\n")
                         file.write("\n" + "{}".format(str1) + "\n")
                         file.close()
+
                     print("\n"
                           "{} \n".format(room.room_name),
                           "\n"
@@ -143,13 +146,13 @@ class Dojo(object):
                           "\n"
                           )
                 else:
-
                     if filename:
                         file = open(filename + ".txt", "a")
                         file.write("\n" + "{} \n".format(room.room_name))
                         file.write("\n" + "------------------------------------------\n")
                         file.write("This {} space contains no occupants".format(room.type) + "\n")
                         file.close()
+
                     print("\n"
                           "{} \n".format(room.room_name),
                           "\n"
@@ -158,8 +161,6 @@ class Dojo(object):
                           "This {} space contains no occupants".format(room.type),
                           "\n"
                           )
-        else:
-            print("Sorry.No rooms exist. Please create one")
 
     def print_unallocated(self, filename=None):
         """
@@ -168,18 +169,16 @@ class Dojo(object):
         it prints out a statement highlighting the people who lack rooms and the type of room
         they lack.
         """
+
+        if len(self.waiting_for_office_allocation) == 0 and len(self.waiting_for_living_space_allocation) == 0:
+            print("There are no people who lack Rooms")
+
         if len(self.waiting_for_office_allocation) > 0:
             people = []
             for person in self.waiting_for_office_allocation:
                 people.append(person.person_name)
             str1 = ', '.join(str(e) for e in people)
 
-            if filename:
-                file = open(filename + ".txt", "a")
-                file.write("\n" + "people who lack offices \n")
-                file.write("\n" + "------------------------------------------\n")
-                file.write("{}".format(str1) + "\n")
-                file.close()
             print("\n"
                   "people who lack offices \n",
                   "\n"
@@ -188,18 +187,20 @@ class Dojo(object):
                   "{}".format(str1),
                   "\n"
                   )
+
+            if filename:
+                print("printing file...")
+                file = open(filename + ".txt", "a")
+                file.write("\n" + "people who lack offices \n")
+                file.write("\n" + "------------------------------------------\n")
+                file.write("{}".format(str1) + "\n")
+                file.close()
+
         if len(self.waiting_for_living_space_allocation) > 0:
             people = []
             for person in self.waiting_for_living_space_allocation:
                 people.append(person.person_name)
             str1 = ', '.join(str(e) for e in people)
-
-            if filename:
-                file = open(filename + ".txt", "a")
-                file.write("\n" + "people who lack Living spaces \n")
-                file.write("\n" + "------------------------------------------\n")
-                file.write("{}".format(str1) + "\n")
-                file.close()
 
             print("\n"
                   "people who lack Living spaces \n",
@@ -209,5 +210,11 @@ class Dojo(object):
                   "{}".format(str1),
                   "\n"
                   )
-        else:
-            print("There are no people who lack Rooms")
+
+            if filename:
+                print("printing file...")
+                file = open(filename + ".txt", "a")
+                file.write("\n" + "people who lack Living spaces \n")
+                file.write("\n" + "------------------------------------------\n")
+                file.write("{}".format(str1) + "\n")
+                file.close()
