@@ -227,7 +227,7 @@ class Dojo(object):
             return "Sorry that person does not exist"
 
         if new_room_name not in [room.room_name for room in self.total_rooms]:
-            return "Sorry that person does not exist"
+            return "Sorry that room does not exist"
 
         for person in self.total_people:
             if person_identifier == person.person_name:
