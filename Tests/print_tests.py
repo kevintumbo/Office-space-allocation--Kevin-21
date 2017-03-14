@@ -77,7 +77,7 @@ class TestPrintCreation(unittest.TestCase):
         third_line = allocated_file[5]
         self.assertEquals(first_line, "kenya \n")
         self.assertEquals(third_line, "Kevin Oriels\n")
-        # os.remove("allocated_persons.txt")
+        os.remove("allocated_persons.txt")
 
     def test_successful_print_list_of_unallocated_to_txt_file(self):
 

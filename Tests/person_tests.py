@@ -38,9 +38,9 @@ class TestPersonCreation(unittest.TestCase):
         self.dojo.create_room("office", ["kenya", "uganda"])
         self.dojo.create_room("living", ["Nairobi", "Kampala"])
         self.assertEqual(len(self.dojo.total_people), 0)
-        self.dojo.add_person('Joe', 'jameson','FELLOW', 'Y')
-        self.dojo.add_person('James', 'konia','FELLOW')
-        self.dojo.add_person('Larry', 'smith','FELLOW', 'N')
+        self.dojo.add_person('Joe', 'jameson', 'FELLOW', 'Y')
+        self.dojo.add_person('James', 'konia', 'FELLOW')
+        self.dojo.add_person('Larry', 'smith', 'FELLOW', 'N')
         self.assertEqual(len(self.dojo.total_people), 3, 'staff member(s) were added to the system!')
 
     def test_cannot_add_person_with_missing_arguments(self):
