@@ -57,7 +57,7 @@ class TestPersonCreation(unittest.TestCase):
         self.assertEqual(len(self.dojo.total_people), self.num_of_people,
                          'Person(s) cannot be created without necessary credentials')
 
-    def test_successful_loading_of_people_using_from_a_txt_file(self):
+    def test_successful_loading_of_people_using_a_txt_file(self):
         """ Test for successful addition of person(s) from a txt file """
 
         self.dojo = Dojo()
@@ -77,7 +77,6 @@ class TestPersonCreation(unittest.TestCase):
 
         self.dojo = Dojo()
         self.dojo.load_people("wrong_format")
-        self.assertEqual(len(self.dojo.total_people), 0)
         self.assertEqual(len(self.dojo.total_people), 0)
 
 
@@ -137,7 +136,7 @@ class TestReallocatePerson(unittest.TestCase):
         self.dojo.add_person('chris', 'Jaba', 'FELLOW', 'Y')
         self.dojo.create_room("office", ["Somalia"])
         msg1 = self.dojo.reallocate_person("chris", "Jaba", "Ghana")
-        self.assertEquals(msg1, "Sorry that person does not exist")
+        self.assertEquals(msg1, "Sorry that room does not exist")
 
     def test_cannot_reallocate_person_in_room_with_maximum_occupants(self):
         """ Test failure when reallocating person to room at maximum capacity """
