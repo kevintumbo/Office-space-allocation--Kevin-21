@@ -249,7 +249,7 @@ class Dojo(object):
                 if person_reallocating in self.waiting_for_office_allocation:
                     self.waiting_for_office_allocation.remove(person_reallocating)
                     room_to_relocate.occupants.append(person_reallocating)
-                    return "You has been removed from office waiting list to {0} {1}" \
+                    return "You has been successfully allocated {0} {1}" \
                         .format(room_to_relocate.type, room_to_relocate.room_name)
                 else:
                     for room_occupied in rooms_occupied:
