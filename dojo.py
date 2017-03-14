@@ -1,6 +1,7 @@
 from apps.person import Staff, Fellow
 from apps.rooms import Office, LivingSpace
 import random
+import os
 
 
 class Dojo(object):
@@ -218,3 +219,78 @@ class Dojo(object):
                 file.write("\n" + "------------------------------------------\n")
                 file.write("{}".format(str1) + "\n")
                 file.close()
+
+    def reallocate_person(self, first_name, last_name, new_room_name):
+        person_identifier = first_name + " " + last_name
+
+        if person_identifier not in [person.person_name for person in self.total_people]:
+            return "Sorry that person does not exist"
+
+        if new_room_name not in [room.room_name for room in self.total_rooms]:
+            return "Sorry that person does not exist"
+
+        for person in self.total_people:
+            if person_identifier == person.person_name:
+                person_reallocating = person
+
+        rooms_occupied = []
+
+        for room in self.total_rooms:
+            if room.room_name == new_room_name:
+                room_to_relocate = room
+            if person_reallocating in room.occupants:
+                rooms_occupied.append(room)
+
+        if len(room_to_relocate.occupants) == room_to_relocate.maximum_occupants:
+            return "sorry that room is full"
+
+        else:
+            if room_to_relocate.type == "office":
+                if person_reallocating in self.waiting_for_office_allocation:
+                    self.waiting_for_office_allocation.remove(person_reallocating)
+                    room_to_relocate.occupants.append(person_reallocating)
+                    return "You has been removed from office waiting list to {0} {1}" \
+                        .format(room_to_relocate.type, room_to_relocate.room_name)
+                else:
+                    for room_occupied in rooms_occupied:
+                        if room_occupied.room_name == room_to_relocate.room_name:
+                            return "sorry. you cannot reallocate to the same room"
+                        if room_occupied.type == room_to_relocate.type:
+                            room_occupied.occupants.remove(person_reallocating)
+                            room_to_relocate.occupants.append(person_reallocating)
+                            return "you have successfully been reallocated from {0} to {1}." \
+                                .format(room_occupied.room_name, room_to_relocate.room_name)
+
+            if room_to_relocate.type == "living":
+                if person_reallocating.role == "STAFF":
+                    return "Sorry.staff cannot be allowed in living space"
+                if person_reallocating in self.waiting_for_living_space_allocation:
+                    self.waiting_for_living_space_allocation.remove(person_reallocating)
+                    room_to_relocate.occupants.append(person_reallocating)
+                    return "You has been removed from living space waiting list to {0} {1}." \
+                        .format(room_to_relocate.type, room_to_relocate.room_name)
+                else:
+                    for room_occupied in rooms_occupied:
+                        if room_occupied.room_name == room_to_relocate.room_name:
+                            return "sorry. you cannot reallocate to the same room"
+                        if room_occupied.type == room_to_relocate.type:
+                            room_occupied.occupants.remove(person_reallocating)
+                            room_to_relocate.occupants.append(person_reallocating)
+                            return "you have successfully been reallocated from {0} to {1}." \
+                                .format(room_occupied.room_name, room_to_relocate.room_name)
+
+    def load_people(self, filename):
+        if os.path.isfile(filename + ".txt"):
+            file = open(filename + ".txt").readlines()
+            for person in file:
+                string = person.split()
+                first_name = string[0]
+                last_name = string[1]
+                role = string[2]
+                if len(string) > 3:
+                    accommodation = string[3]
+                else:
+                    accommodation = "N"
+                self.add_person(first_name, last_name, role, accommodation)
+        else:
+            return "Sorry that file does not exist"
