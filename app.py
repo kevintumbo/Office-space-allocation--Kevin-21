@@ -7,6 +7,8 @@ Usage:
     dojo_space print_room <room_name>
     dojo_space print_allocation [<filename>]
     dojo_space print_unallocated [<filename>]
+    dojo_space reallocate_person <first_name> <last_name> <new_room_name>
+    dojo_space load_people <filename>
     dojo_space (-i | --interactive)
 
 Options:
@@ -84,7 +86,7 @@ class App(cmd.Cmd):
         role = arg["<role>"]
         accommodation = arg["<wants_accommodation>"]
 
-        self.dojo.add_person(first_name, last_name, role, accommodation)
+        print(self.dojo.add_person(first_name, last_name, role, accommodation))
 
     @docopt_cmd
     def do_print_room(self, arg):
@@ -109,6 +111,29 @@ class App(cmd.Cmd):
         Usage: print_unallocated [<filename>]
         """
         self.dojo.print_unallocated(arg["<filename>"])
+
+    @docopt_cmd
+    def do_reallocate_person(self, arg):
+
+        """
+        Usage: reallocate_person <first_name> <last_name> <new_room_name>
+        """
+
+        first_name = arg["<first_name>"]
+        last_name = arg["<last_name>"]
+        new_room_name = arg["<new_room_name>"]
+
+        print(self.dojo.reallocate_person(first_name, last_name, new_room_name))
+
+    @docopt_cmd
+    def do_load_people(self, arg):
+
+        """
+        Usage: load_people <filename>
+        """
+
+        filename = arg["<filename>"]
+        print(self.dojo.load_people(filename))
 
     def do_quit(self, arg):
 

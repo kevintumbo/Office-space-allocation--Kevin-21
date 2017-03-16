@@ -33,36 +33,43 @@ class Dojo(object):
     def add_person(self, first_name, last_name, role, accommodation="N"):
 
         """ adds a new person to the system """
-        person_name = first_name + " " + last_name
 
-        if role == "FELLOW":
-            new_person = Fellow(person_name)
-            self.total_people.append(new_person)
-            self.check_availability()
-            if self.available_offices:
-                self.allocate_room(new_person, room="office")
-            else:
-                self.waiting_for_office_allocation.append(new_person)
-                print('sorry no offices available at the moment. please try again later')
-            if accommodation == 'Y':
-                if not self.available_living_space:
-                    self.waiting_for_living_space_allocation.append(new_person)
-                    print('sorry no living space available at the moment. please try again later ')
-                else:
-                    self.allocate_room(new_person, room="living")
-        elif role == "STAFF":
-            new_person = Staff(person_name)
-            self.total_people.append(new_person)
-            self.check_availability()
-            if self.available_offices:
-                self.allocate_room(new_person, room="office")
-            else:
-                self.waiting_for_office_allocation.append(new_person)
-                print('sorry no offices available at the moment. please try again later')
-            if accommodation == 'Y':
-                print('Sorry living space is for fellows only')
+        person_name = first_name + " " + last_name
+        if person_name in [person.person_name for person in self.total_people]:
+            return "That Name is already in the system. Please enter different name or use middle name"
+
+        if role != "FELLOW" and role != "STAFF":
+            return "You've entered an invalid role. Please choose either FELLOW or STAFF"
+
         else:
-            print("You've entered an invalid role. Please choose either Fellow or Staff")
+            if role == "FELLOW":
+                new_person = Fellow(person_name)
+                self.total_people.append(new_person)
+                self.check_availability()
+                if not self.available_offices:
+                    self.waiting_for_office_allocation.append(new_person)
+                    print('sorry no offices available at the moment. please try again later')
+                if self.available_offices:
+                    self.allocate_room(new_person, room="office")
+
+                if accommodation == 'Y':
+                    if not self.available_living_space:
+                        self.waiting_for_living_space_allocation.append(new_person)
+                        print('sorry no living space available at the moment. please try again later ')
+                    if self.available_living_space:
+                        self.allocate_room(new_person, room="living")
+
+            if role == "STAFF":
+                new_person = Staff(person_name)
+                self.total_people.append(new_person)
+                self.check_availability()
+                if not self.available_offices:
+                    self.waiting_for_office_allocation.append(new_person)
+                    print('sorry no offices available at the moment. please try again later')
+                if self.available_offices:
+                    self.allocate_room(new_person, room="office")
+                if accommodation == 'Y':
+                    print('Sorry living space is for fellows only')
 
     def check_availability(self):
 
@@ -249,8 +256,8 @@ class Dojo(object):
                 if person_reallocating in self.waiting_for_office_allocation:
                     self.waiting_for_office_allocation.remove(person_reallocating)
                     room_to_relocate.occupants.append(person_reallocating)
-                    return "You has been successfully allocated {0} {1}" \
-                        .format(room_to_relocate.type, room_to_relocate.room_name)
+                    return "{0} has been successfully allocated {1} {2}" \
+                        .format(person_reallocating.person_name, room_to_relocate.type, room_to_relocate.room_name)
                 else:
                     for room_occupied in rooms_occupied:
                         if room_occupied.room_name == room_to_relocate.room_name:
@@ -258,8 +265,9 @@ class Dojo(object):
                         if room_occupied.type == room_to_relocate.type:
                             room_occupied.occupants.remove(person_reallocating)
                             room_to_relocate.occupants.append(person_reallocating)
-                            return "you have successfully been reallocated from {0} to {1}." \
-                                .format(room_occupied.room_name, room_to_relocate.room_name)
+                            return "{0} have successfully been reallocated from {1} to {2}." \
+                                .format(person_reallocating.person_name, room_occupied.room_name,
+                                        room_to_relocate.room_name)
 
             if room_to_relocate.type == "living":
                 if person_reallocating.role == "STAFF":
@@ -267,8 +275,8 @@ class Dojo(object):
                 if person_reallocating in self.waiting_for_living_space_allocation:
                     self.waiting_for_living_space_allocation.remove(person_reallocating)
                     room_to_relocate.occupants.append(person_reallocating)
-                    return "You has been removed from living space waiting list to {0} {1}." \
-                        .format(room_to_relocate.type, room_to_relocate.room_name)
+                    return "{0} has been successfully allocated {1} {2}" \
+                        .format(person_reallocating.person_name, room_to_relocate.type, room_to_relocate.room_name)
                 else:
                     for room_occupied in rooms_occupied:
                         if room_occupied.room_name == room_to_relocate.room_name:
@@ -276,8 +284,9 @@ class Dojo(object):
                         if room_occupied.type == room_to_relocate.type:
                             room_occupied.occupants.remove(person_reallocating)
                             room_to_relocate.occupants.append(person_reallocating)
-                            return "you have successfully been reallocated from {0} to {1}." \
-                                .format(room_occupied.room_name, room_to_relocate.room_name)
+                            return "{0} have successfully been reallocated from {1} to {2}." \
+                                .format(person_reallocating.person_name, room_occupied.room_name,
+                                        room_to_relocate.room_name)
 
     def load_people(self, filename):
         if os.path.isfile(filename + ".txt"):
