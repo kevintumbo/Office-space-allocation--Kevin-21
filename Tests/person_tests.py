@@ -43,6 +43,12 @@ class TestPersonCreation(unittest.TestCase):
         self.dojo.add_person('Larry', 'smith', 'FELLOW', 'N')
         self.assertEqual(len(self.dojo.total_people), 3, 'staff member(s) were added to the system!')
 
+    def test_cannot_add_duplicate_name(self):
+        self.dojo = Dojo()
+        self.dojo.add_person('James', 'konia', 'FELLOW')
+        self.dojo.add_person('James', 'konia', 'FELLOW')
+        self.assertEqual(len(self.dojo.total_people), 1)
+
     def test_cannot_add_person_with_missing_arguments(self):
 
         """ Test failure in addition of persons with Missing arguments """
