@@ -303,3 +303,9 @@ class Dojo(object):
                 self.add_person(first_name, last_name, role, accommodation)
         else:
             return "Sorry that file does not exist"
+
+    def save_state(self, db_name=None):
+        pass
+
+    def load_state(self, db_name=None):
+        pass
