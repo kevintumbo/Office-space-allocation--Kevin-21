@@ -327,8 +327,12 @@ class Dojo(object):
             room.maximum_occupants = space.maximum_occupants
             room.current_occupants = len(space.occupants)
 
-            new_session.add(room)
-            new_session.commit()
+            # check if room name exists
+            room_name_exists = new_session.query(Room).filter(Room.room_name == room.room_name).first()
+
+            if not room_name_exists:
+                new_session.add(room)
+                new_session.commit()
 
         # loop through all people
         for individual in self.total_people:
@@ -344,8 +348,13 @@ class Dojo(object):
                 if individual in space.occupants and space.type == "living":
                     person.living_space_allocated = space.room_name
 
-            new_session.add(person)
-            new_session.commit()
+            # check if person_name exists in database
+            person_name_exists = new_session.query(People).filter(People.name == person.name).first()
+
+            if not person_name_exists:
+
+                new_session.add(person)
+                new_session.commit()
 
         return 'You have saved data to the database'
 
