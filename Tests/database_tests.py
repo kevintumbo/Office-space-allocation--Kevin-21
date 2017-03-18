@@ -32,12 +32,21 @@ class TestSaveState(unittest.TestCase):
         self.dojo = Dojo()
         self.dojo.create_room("office", ["kenya"])
         self.dojo.create_room("living", ["Kampala"])
-        self.dojo.add_person('Ian', 'pyr', 'FELLOW', 'Y')
-        self.dojo.add_person('Joel', 'Ortiz', 'FELLOW', 'Y')
-        self.dojo.add_person('Armin', 'Buren', 'STAFF')
+        self.dojo.load_people("sample")
         msg = self.dojo.save_state('test')
         self.assertTrue(os.path.isfile("test.db"))
         self.assertEqual(msg, "You have saved data to the database")
+        conn = sqlite3.connect("test.db")
+        c = conn.cursor()
+        name = ('OLUWAFEMI SULE',)
+        c.execute('SELECT * FROM people WHERE name=?', name)
+        row = c.fetchone()
+        assert row[1] == 'OLUWAFEMI SULE'
+        assert row[2] == 'FELLOW'
+        assert row[3] == 'Y'
+        assert row[4] == 'kenya'
+        assert row[5] == 'Kampala'
+        conn.close()
         os.remove("test.db")
 
 
@@ -50,26 +59,13 @@ class TestLoadState(unittest.TestCase):
         """ Test successful loading of data from database into from app using the load_state method """
 
         self.dojo = Dojo()
-        self.dojo.create_room("office", ["kenya"])
-        self.dojo.create_room("living", ["Kampala"])
-        self.dojo.add_person('Ian', 'pyr', 'FELLOW', 'Y')
-        self.dojo.add_person('Joel', 'Ortiz', 'FELLOW', 'Y')
-        self.dojo.add_person('Armin', 'Buren', 'STAFF')
-        msg = self.dojo.save_state('test')
-        self.assertTrue(os.path.isfile("test.db"))
-        self.assertEqual(msg, "You have saved data to the database")
-        conn = sqlite3.connect("test.db")
-        c = conn.cursor()
-        name = ('Ian pyr',)
-        c.execute('SELECT * FROM people WHERE name=?', name)
-        row = c.fetchone()
-        assert row[1] == 'Ian pyr'
-        assert row[2] == 'FELLOW'
-        assert row[3] == 'Y'
-        assert row[4] == 'kenya'
-        assert row[5] == 'Kampala'
-        conn.close()
-        os.remove("test.db")
+        self.assertTrue(os.path.isfile("dojo_test.db"))
+        msg = self.dojo.load_state("dojo_test")
+        self.assertEqual(msg, "database has been loaded")
+        self.assertTrue(len(self.dojo.total_rooms) == 2)
+        self.assertTrue(len(self.dojo.total_people) == 7)
+        self.assertTrue(len(self.dojo.waiting_for_office_allocation) == 1)
+        self.assertTrue(len(self.dojo.waiting_for_living_space_allocation) == 1)
 
     def test_failure_when_loading_database_that_does_not_exist(self):
 
