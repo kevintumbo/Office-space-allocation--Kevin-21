@@ -1,5 +1,8 @@
 from apps.person import Staff, Fellow
 from apps.rooms import Office, LivingSpace
+from apps.database import *
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 import random
 import os
 
@@ -43,31 +46,29 @@ class Dojo(object):
 
         else:
             if role == "FELLOW":
-                new_person = Fellow(person_name)
+                new_person = Fellow(person_name, accommodation)
                 self.total_people.append(new_person)
                 self.check_availability()
-                if not self.available_offices:
-                    self.waiting_for_office_allocation.append(new_person)
-                    print('sorry no offices available at the moment. please try again later')
                 if self.available_offices:
                     self.allocate_room(new_person, room="office")
-
+                else:
+                    self.waiting_for_office_allocation.append(new_person)
+                    print('sorry no offices available at the moment. please try again later')
                 if accommodation == 'Y':
                     if not self.available_living_space:
                         self.waiting_for_living_space_allocation.append(new_person)
                         print('sorry no living space available at the moment. please try again later ')
-                    if self.available_living_space:
+                    else:
                         self.allocate_room(new_person, room="living")
-
             if role == "STAFF":
                 new_person = Staff(person_name)
                 self.total_people.append(new_person)
                 self.check_availability()
-                if not self.available_offices:
-                    self.waiting_for_office_allocation.append(new_person)
-                    print('sorry no offices available at the moment. please try again later')
                 if self.available_offices:
                     self.allocate_room(new_person, room="office")
+                else:
+                    self.waiting_for_office_allocation.append(new_person)
+                    print('sorry no offices available at the moment. please try again later')
                 if accommodation == 'Y':
                     print('Sorry living space is for fellows only')
 
@@ -305,7 +306,116 @@ class Dojo(object):
             return "Sorry that file does not exist"
 
     def save_state(self, db_name=None):
-        pass
+        """ This method saves data from app into database"""
+
+        if db_name:
+            db = db_name + '.db'
+            engine = create_engine('sqlite:///{}'.format(db))
+        else:
+            engine = create_engine('sqlite:///dojo.db')
+
+        Base.metadata.create_all(engine)
+        session = sessionmaker(bind=engine)
+        new_session = session()
+
+        # loop through all rooms
+        for space in self.total_rooms:
+            room = Room()
+
+            room.room_name = space.room_name
+            room.room_type = space.type
+            room.maximum_occupants = space.maximum_occupants
+            room.current_occupants = len(space.occupants)
+
+            new_session.add(room)
+            new_session.commit()
+
+        # loop through all people
+        for individual in self.total_people:
+            person = People()
+
+            person.name = individual.person_name
+            person.role = individual.role
+            person.accomodation = individual.accomodation
+
+            for space in self.total_rooms:
+                if individual in space.occupants and space.type == "office":
+                    person.office_allocated = space.room_name
+                if individual in space.occupants and space.type == "living":
+                    person.living_space_allocated = space.room_name
+
+            new_session.add(person)
+            new_session.commit()
+
+        return 'You have saved data to the database'
 
     def load_state(self, db_name=None):
-        pass
+        """ Loads data from database into from app """
+        if os.path.isfile(db_name + ".db"):
+
+            if db_name:
+                db = db_name + '.db'
+                engine = create_engine('sqlite:///{}'.format(db))
+            else:
+                engine = create_engine('sqlite:///dojo.db')
+
+            session = sessionmaker(bind=engine)
+            new_session = session()
+
+            people = new_session.query(People).all()
+            rooms = new_session.query(Room).all()
+
+            for room in rooms:
+                room_name = room.room_name
+                room_type = room.room_type
+
+                if room_type == "office":
+                    load_office = Office(room_name)
+                    self.total_rooms.append(load_office)
+
+                if room_type == "living":
+                    load_living_space = LivingSpace(room_name)
+                    self.total_rooms.append(load_living_space)
+
+            for person in people:
+                person_name = person.name
+                person_role = person.role
+                person_accomodation = person.accomodation
+                office_allocated = person.office_allocated
+                living_space_allocated = person.living_space_allocated
+
+                if person_role == "FELLOW":
+                    load_person = Fellow(person_name, person_accomodation)
+                    self.total_people.append(load_person)
+
+                    if not office_allocated:
+                        self.waiting_for_office_allocation.append(load_person)
+
+                    if not living_space_allocated and person_accomodation == "Y":
+                        self.waiting_for_living_space_allocation.append(load_person)
+
+                    if office_allocated:
+                        for room in self.total_rooms:
+                            if room.room_name == office_allocated:
+                                room.occupants.append(load_person)
+
+                    if living_space_allocated:
+                        for room in self.total_rooms:
+                            if room.room_name == living_space_allocated:
+                                room.occupants.append(load_person)
+
+                if person_role == "STAFF":
+                    load_person = Staff(person_name)
+                    self.total_people.append(load_person)
+
+                    if not office_allocated:
+                        self.waiting_for_office_allocation.append(load_person)
+
+                    if office_allocated:
+                        for room in self.total_rooms:
+                            if room.room_name == office_allocated:
+                                room.occupants.append(load_person)
+
+            return 'database has been loaded'
+        else:
+            return 'Sorry that database file cannot be found'
