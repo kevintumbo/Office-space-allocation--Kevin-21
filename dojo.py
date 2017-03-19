@@ -360,15 +360,11 @@ class Dojo(object):
 
         return 'You have saved data to the database'
 
-    def load_state(self, db_name=None):
+    def load_state(self, db_name):
         """ Loads data from database into from app """
         if os.path.isfile(db_name + ".db"):
-
-            if db_name:
-                db = db_name + '.db'
-                engine = create_engine('sqlite:///{}'.format(db))
-            else:
-                engine = create_engine('sqlite:///dojo.db')
+            db = db_name + '.db'
+            engine = create_engine('sqlite:///{}'.format(db))
 
             session = sessionmaker(bind=engine)
             new_session = session()
