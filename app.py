@@ -9,11 +9,15 @@ Usage:
     dojo_space print_unallocated [<filename>]
     dojo_space reallocate_person <first_name> <last_name> <new_room_name>
     dojo_space load_people <filename>
+    dojo_space save_state [<db_name>]
+    dojo_space load_state <db_name>
     dojo_space (-i | --interactive)
+    dojo_space (-h | --help | --version)
 
 Options:
     -i, --interactive  Interactive Mode
-
+    -h, --help Show this screen and exit
+    --baud=<n>  Baudrate [default: 9600]
 """
 
 import cmd
@@ -55,8 +59,22 @@ def docopt_cmd(func):
 
 
 class App(cmd.Cmd):
+    print("WELCOME TO DOJO ROOM ALLOCATION")
+    print("")
+    print("ROOM ALLOCATION COMMANDS")
+    print("")
+    print("1.  create_room <room_type> <room_name> ...")
+    print("2.  add_person <first_name> <last_name> <role> [<wants_accommodation>]")
+    print("3.  print_room <room_name>")
+    print("4.  print_allocation[ <filename>]")
+    print("5.  print_unallocated[<filename>]")
+    print("6.  reallocate_person <first_name> <last_name> <new_room_name>")
+    print("7.  load_people <filename>")
+    print("8.  save_state[<db_name>]")
+    print("9.  load_state <db_name>")
+    print("10. quit")
+    print("")
 
-    intro = 'A Room Allocation system for Andela Kenya facility Known As the dojo'
     prompt = '(dojo_space)'
     dojo = Dojo()
 
@@ -135,11 +153,33 @@ class App(cmd.Cmd):
         filename = arg["<filename>"]
         print(self.dojo.load_people(filename))
 
+    @docopt_cmd
+    def do_save_state(self, arg):
+
+        """
+        Usage: save_state [<db_name>]
+        """
+
+        db_name = arg["<db_name>"]
+        print(self.dojo.save_state(db_name))
+
+    @docopt_cmd
+    def do_load_state(self, arg):
+
+        """
+        Usage: load_state <db_name>
+        """
+
+        db_name = arg["<db_name>"]
+        print(self.dojo.load_state(db_name))
+
     def do_quit(self, arg):
 
         """ Quits out of program"""
 
+        print('Thank you for using Dojo!')
         print('See you next time!')
+        print('THIS IS ANDELA')
         exit()
 
 
