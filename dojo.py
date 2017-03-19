@@ -71,6 +71,7 @@ class Dojo(object):
                     print('sorry no offices available at the moment. please try again later')
                 if accommodation == 'Y':
                     print('Sorry living space is for fellows only')
+            return 'proceed'
 
     def check_availability(self):
 
