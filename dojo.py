@@ -309,11 +309,12 @@ class Dojo(object):
     def save_state(self, db_name=None):
         """ This method saves data from app into database"""
 
-        if db_name:
+        if not db_name:
+            engine = create_engine('sqlite:///dojo.db')
+
+        else:
             db = db_name + '.db'
             engine = create_engine('sqlite:///{}'.format(db))
-        else:
-            engine = create_engine('sqlite:///dojo.db')
 
         Base.metadata.create_all(engine)
         session = sessionmaker(bind=engine)
