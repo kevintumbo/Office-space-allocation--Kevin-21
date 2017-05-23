@@ -10,7 +10,7 @@ install:
 env:
   - DB=sqlite
 # command to run tests
-script: nosetests Tests/ --with-coverage
+script: nosetests Tests/room_tests.py --with-coverage
 
 after_success:
   - coveralls
