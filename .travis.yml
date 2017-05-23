@@ -7,6 +7,8 @@ install:
 - pip install coveralls
 - pip install coverage
 
+env:
+  - DB=sqlite
 # command to run tests
 script: nosetests --with-coverage
 
