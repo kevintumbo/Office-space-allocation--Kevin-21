@@ -1,5 +1,6 @@
 # Dojo Space Allocator
 ---
+[![Build Status](https://travis-ci.org/kevintumbo/Office-space-allocation--Kevin-21.svg?branch=Development)](https://travis-ci.org/kevintumbo/Office-space-allocation--Kevin-21)
 [![Coverage Status](https://coveralls.io/repos/github/kevintumbo/Office-space-allocation--Kevin-21/badge.svg?branch=Development)](https://coveralls.io/github/kevintumbo/Office-space-allocation--Kevin-21?branch=Development)
 ### intro
 This is a commandline application that allows you to add people to it and assigns them rooms automatically and reallocates them to various rooms as need arises. The project was developed using and runs on python 3.5 +.
